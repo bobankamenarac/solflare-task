@@ -1,0 +1,977 @@
+{
+	"info": {
+		"_postman_id": "51faef10-441c-4b26-8e2f-70c1b5e0dae1",
+		"name": "solflare",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12887092"
+	},
+	"item": [
+		{
+			"name": "Test Scenario 1",
+			"item": [
+				{
+					"name": "devnet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"let tokens = jsonData.tokens.map(token => token);  \r",
+									"\r",
+									"pm.test('Check if there are tokens that are not Solana', () => {\r",
+									"    let differentTokens = false;\r",
+									"\r",
+									"    for (const token of tokens) {\r",
+									"        if(token.symbol !== 'SOL') {\r",
+									"            differentTokens = true\r",
+									"         }\r",
+									"    }\r",
+									"\r",
+									"    pm.expect(differentTokens).to.eql(true);\r",
+									"})\r",
+									"\r",
+									"pm.test('Check if every token have mint address and if it is string', () => {\r",
+									"    let allHavePropertyMintAndAreString = true;\r",
+									"\r",
+									"    for(const token of tokens) {\r",
+									"        if (!Object.hasOwn(token, 'mint') && (typeof(token.mint) !== 'string')){\r",
+									"            allHavePropertyMintAndAreString = false;\r",
+									"        }\r",
+									"    }\r",
+									"\r",
+									"    pm.expect(allHavePropertyMintAndAreString).to.eql(true);\r",
+									"})\r",
+									"\r",
+									"    \r",
+									"pm.test('Check if totalUiAmount for all tokens have valid value', () => {\r",
+									"    // Here guess is that totalUiAmount is a positive number\r",
+									"    for(const token of tokens) {\r",
+									"        pm.expect(token.totalUiAmount).to.be.greaterThanOrEqual(0);\r",
+									"    }\r",
+									"})\r",
+									"\r",
+									"pm.test('Check type of price property and if they are present for all tokens', () => {\r",
+									"    let allHavePrice = true;\r",
+									"\r",
+									"    for(const token of tokens) {\r",
+									"        if (!Object.hasOwn(token, 'price')){\r",
+									"            allHavePrice = false;\r",
+									"        }\r",
+									"    }\r",
+									"\r",
+									"    // Here we can notice that price is not included as property for all tokens!\r",
+									"    pm.expect(allHavePrice).to.eql(true);\r",
+									"})\r",
+									"\r",
+									"pm.test('Check type of coingeckoId property and if they are present for all tokens', () => {\r",
+									"    let allHavePropertyCoingeckoIAndAreStrings = true;\r",
+									"\r",
+									"    for(const token of tokens) {   \r",
+									"        if (!Object.hasOwn(token, 'coingeckoId') && (typeof(token.mint) !== 'string')){\r",
+									"            allHavePropertyCoingeckoIAndAreStrings = false;\r",
+									"        }\r",
+									"    }\r",
+									"\r",
+									"    pm.expect(allHavePropertyCoingeckoIAndAreStrings).to.eql(true);\r",
+									"    \r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/tokens/{{address}}?network=devnet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devnet"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test Scenario 2",
+			"item": [
+				{
+					"name": "Without network",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"let stringArray = jsonData.tokens.map(token => token);  \r",
+									"\r",
+									"pm.test('Check if solana is only token', () => {\r",
+									"    let differentTokens = false;\r",
+									"\r",
+									"    for (const token of stringArray) {\r",
+									"        if(token.symbol !== 'SOL') {\r",
+									"            differentTokens = true\r",
+									"         }\r",
+									"    }\r",
+									"\r",
+									"    //This test will fail because there are tokens that are different from solana\r",
+									"    pm.expect(differentTokens).to.eql(false);\r",
+									"})\r",
+									"\r",
+									"pm.test('Check essential properties of solana token', () => {\r",
+									"    for (const token of stringArray) {\r",
+									"        if(token.symbol === 'SOL') {\r",
+									"            pm.expect(token.name).to.equal('Solana')\r",
+									"            pm.expect(token.symbol).to.equal('SOL')\r",
+									"            pm.expect(token.mint).to.equal('11111111111111111111111111111111')    \r",
+									"            pm.expect(token.totalUiAmount).to.be.greaterThanOrEqual(0);\r",
+									"        }\r",
+									"    }\r",
+									"})\r",
+									"\r",
+									"pm.test('Check that price object contains key values', () => {\r",
+									"    for (const token of stringArray) {\r",
+									"        if(token.symbol === 'SOL') {\r",
+									"            pm.expect(Object.hasOwn(token.price, 'price')).to.equal(true)\r",
+									"            pm.expect(Object.hasOwn(token.price, 'change')).to.equal(true)\r",
+									"            pm.expect(Object.hasOwn(token.price, 'usdPrice')).to.equal(true)\r",
+									"            pm.expect(Object.hasOwn(token.price, 'usdChange')).to.equal(true)\r",
+									"            pm.expect(Object.hasOwn(token.price, 'liquidity')).to.equal(true)\r",
+									"            pm.expect(Object.hasOwn(token.price, 'volume24h')).to.equal(true)\r",
+									"            pm.expect(Object.hasOwn(token.price, 'volumeChange24h')).to.equal(true)\r",
+									"            pm.expect(Object.hasOwn(token.price, 'currency')).to.equal(true)\r",
+									"            pm.expect(Object.hasOwn(token.price, 'mc')).to.equal(true)\r",
+									"        }\r",
+									"    }\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/tokens/{{address}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test scenario 3",
+			"item": [
+				{
+					"name": "With invalid bearer token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/tokens/{{address}}?network=devnet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devnet"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Without autorization",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/tokens/{{address}}?network=devnet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devnet"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "With  invalid address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/tokens/{{invalidAddress}}?network=devnet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{invalidAddress}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devnet"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "With invalid network",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(40);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/tokens/{{address}}?network=devtest",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devtest"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "With token instead of tokens",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/token/{{address}}?network=devnet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"token",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devnet"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "With v2 version",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v2/portfolio/token/{{address}}?network=devnet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v2",
+								"portfolio",
+								"token",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devnet"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "With http",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{httpBaseUrl}}/v3/portfolio/tokens/{{address}}?network=devnet",
+							"host": [
+								"{{httpBaseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devnet"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "With body instead of query parameters",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"network\": \"devnet\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/tokens/{{address}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "With post and http",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{httpBaseUrl}}/v3/portfolio/tokens/{{address}}?network=devnet",
+							"host": [
+								"{{httpBaseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devnet"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "With delete and http",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{httpBaseUrl}}/v3/portfolio/tokens/{{address}}?network=devnet",
+							"host": [
+								"{{httpBaseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devnet"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Without address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/tokens/{{emptyAddress}}?network=devnet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{emptyAddress}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devnet"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test Scenario 4",
+			"item": [
+				{
+					"name": "Switching from mainnet to devnet and back",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"let mainNetTokens = jsonData.tokens.map(token => token);  \r",
+									"\r",
+									"pm.environment.set('fullResponseMainNet', mainNetTokens)\r",
+									"\r",
+									"pm.test('Status code is 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/tokens/{{address}}?network=mainnet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "mainnet"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "devnet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"let devNetTokens = jsonData.tokens.map(token => token);  \r",
+									"\r",
+									"pm.environment.set('fullResponseDevNet', devNetTokens)\r",
+									"\r",
+									"let mainNetTokens = pm.environment.get(\"fullResponseMainNet\")\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check if devnet have additional tokens than mainnet\", () => {\r",
+									"    pm.expect(devNetTokens.length).to.be.greaterThan(mainNetTokens.length);\r",
+									"})\r",
+									"\r",
+									"pm.test('Status code is 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/tokens/{{address}}?network=devnet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "devnet"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mainnet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"let mainNetNewTokens = jsonData.tokens.map(token => token);\r",
+									"\r",
+									"let maiNetTokens = pm.environment.get('fullResponseMainNet')\r",
+									"let devNetTokens = pm.environment.get('fullResponseDevNet')\r",
+									"\r",
+									"pm.test('Check if mainnet\\'s response is not same as devnet\\' response', () => {\r",
+									"    pm.expect(mainNetNewTokens).to.not.eqls(devNetTokens)\r",
+									"})\r",
+									"\r",
+									"// Remove price and solPrice from each token object in the mainNetTokens because it could be different from the previous response.\r",
+									"for(const token of mainNetNewTokens) {\r",
+									"    delete token.price\r",
+									"    delete token.solPrice\r",
+									"}\r",
+									"\r",
+									"for(const token of maiNetTokens) {\r",
+									"    delete token.price\r",
+									"    delete token.solPrice\r",
+									"}\r",
+									"\r",
+									"pm.test('Status code is 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test('Check if mainnet\\'s responses are same expect maybe for price', () => {\r",
+									"    pm.expect(mainNetNewTokens).to.eqls(maiNetTokens)\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "6594ddd7-748c-45c6-8c35-452d782bad45",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/portfolio/tokens/{{address}}?network=mainnet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"portfolio",
+								"tokens",
+								"{{address}}"
+							],
+							"query": [
+								{
+									"key": "network",
+									"value": "mainnet"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "fullResponse",
+			"value": ""
+		}
+	]
+}
