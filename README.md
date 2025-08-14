@@ -118,7 +118,7 @@ To run api test you will need Postman. Inside git repository in postman folder t
 
 Open Postman and import them. Then check collection where inside solflare folder there are subfolders for different test scenarious.
 First three scenarious can be run by entering every request and sending it.
-For forth scenario it must be runned all together, nex to folder there are "..." symbol, click on it then run.
+For forth scenario it must be runned all together, next to folder there are "..." symbol, click on it then run.
 
 ## 8. Remarks
 
