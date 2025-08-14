@@ -1,4 +1,4 @@
-export const testData = {
+export const TEST_DATA = {
     numberOfPhrases: 12,
     mainWalletName: 'Main Wallet',
     secondWalletName: 'Wallet 2',

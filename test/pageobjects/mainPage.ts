@@ -1,10 +1,10 @@
 import Page from './page';
-import { testData } from '../data/test-data';
+import { TEST_DATA } from '../data/test-data';
 
 export class MainPage extends Page {
 
     /*
-     Define selectors for elements on the main page
+       Define selectors for elements on the main page
     */
     public get sectionWalletPicker() {
         return $('span=Main Wallet');
@@ -14,15 +14,15 @@ export class MainPage extends Page {
     }
 
     public get mainWalletName() {
-           return $(`div=${testData.mainWalletName}`)
+           return $(`div=${TEST_DATA.mainWalletName}`)
     }
 
     public get secondWalletName() {
-        return $(`div=${testData.secondWalletName}`)   
+        return $(`div=${TEST_DATA.secondWalletName}`)   
     }
 
     public get thirdWalletName() {
-        return $(`div=${testData.thirdWalletName}`)   
+        return $(`div=${TEST_DATA.thirdWalletName}`)   
     }
 
     public get addWalletButton() {
@@ -43,7 +43,7 @@ export class MainPage extends Page {
 
 
     /*
-     Methods to interact with the recovery page
+        Methods to interact with the recovery page
     */
     async clickOnWalletPicker(): Promise<void> {
         await this.sectionWalletPicker.click()      
@@ -98,5 +98,4 @@ export class MainPage extends Page {
     async assertThirdWalletNameToBeDisplayed(): Promise<void> {
         expect(await this.thirdWalletName.isDisplayed()).toBe(true);
     }
-
 }

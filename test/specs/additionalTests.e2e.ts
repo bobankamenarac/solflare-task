@@ -1,12 +1,12 @@
 import { expect } from '@wdio/globals'
 import { RecoveryPage } from '../pageobjects/recoveryPage'
-import { testData } from '../data/test-data';
+import { TEST_DATA } from '../data/test-data';
 const logger = require('../../logger');
 
 /*
- Intention of this file was to add some negative checks and to try copy/paste functionality
- in the recovery process. It is not meant to be a complete test suite, but rather a demonstration
- of how to handle some specific scenarios in the recovery process.
+    Intention of this file was to add some negative checks and to try copy/paste functionality
+    in the recovery process. It is not meant to be a complete test suite, but rather a demonstration
+    of how to handle some specific scenarios in the recovery process.
 */
 
 describe('Additional tests', () => {
@@ -23,7 +23,7 @@ describe('Additional tests', () => {
         await recoveryPage.clickOnNeedWalletButton()
 
         // At the moment of writing this test, recovery phrase list had 12 items
-        expect(await recoveryPage.getRecoverCodeListSize()).toBe(testData.numberOfPhrases)
+        expect(await recoveryPage.getRecoverCodeListSize()).toBe(TEST_DATA.numberOfPhrases)
         
         const recoveryItemsValues = await recoveryPage.getRecoveryPhraseItemsValues()
 
@@ -66,8 +66,8 @@ describe('Additional tests', () => {
 
         await recoveryPage.assertContinueButtonToBeDisabled()
 
-        await recoveryPage.fillPassword(testData.password)
-        await recoveryPage.fillRepeatPassword(testData.wrongPassword) 
+        await recoveryPage.fillPassword(TEST_DATA.password)
+        await recoveryPage.fillRepeatPassword(TEST_DATA.wrongPassword) 
 
         await recoveryPage.assertContinueButtonToBeEnabled()
         await recoveryPage.clickContinueButton()

@@ -12,7 +12,7 @@ Automated UI testing project using WebdriverIO. API tests can be managed with Po
 4. [Test Results](#test-results)
 5. [Test Logs](#test-logs)
 6. [Project Structure](#project-structure)
-7. [Api Tests][$api-tests]
+7. [Api Tests](#api-tests)
 
 ---
 
@@ -46,17 +46,23 @@ To run tests in a different browser, set the `BROWSER` environment variable:
 
 **PowerShell:**
 ```sh
-$env:BROWSER="firefox"; npm run wdio
+$env:BROWSER="firefox"
 ```
 
 **Command Prompt:**
 ```sh
-set BROWSER=firefox&& npm run wdio
+set BROWSER=firefox
 ```
 
 **Mac/Linux (sh/bash/zsh):**
 ```sh
-BROWSER=firefox npm run wdio
+export BROWSER="firefox"
+```
+
+> After this just run next command:
+
+```sh
+npm run wdio
 ```
 
 ---
@@ -65,21 +71,16 @@ BROWSER=firefox npm run wdio
 
 Test results are generated in the `allure-results` folder.
 
-To generate and open the Allure report:
+To generate Allure report run:
 
-**PowerShell:**
 ```sh
-npx allure generate allure-results --clean; allure open
+npm run generate-allure
 ```
 
-**Command Prompt:**
-```sh
-npx allure generate allure-results --clean && allure open
-```
+To open Allure report run:
 
-**Mac/Linux (sh/bash/zsh):**
 ```sh
-npx allure generate allure-results --clean && allure open
+npm run open-allure
 ```
 
 ---

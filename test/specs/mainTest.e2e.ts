@@ -1,7 +1,7 @@
 import { expect } from '@wdio/globals'
 import { RecoveryPage } from '../pageobjects/recoveryPage'
 import { MainPage } from '../pageobjects/mainPage'
-import { testData } from '../data/test-data';
+import { TEST_DATA } from '../data/test-data';
 
 const logger = require('../../logger');
 
@@ -21,8 +21,7 @@ describe('My Login application and adding Wallet', () => {
         await recoveryPage.clickOnNeedWalletButton()
 
         // At the moment of writing this test, recovery phrase list had 12 items
-        
-        expect(await recoveryPage.getRecoverCodeListSize()).toBe(testData.numberOfPhrases)
+        expect(await recoveryPage.getRecoverCodeListSize()).toBe(TEST_DATA.numberOfPhrases)
         
         const recoveryItemsValues = await recoveryPage.getRecoveryPhraseItemsValues()
 
@@ -37,8 +36,8 @@ describe('My Login application and adding Wallet', () => {
 
         await recoveryPage.assertContinueButtonToBeDisabled()
 
-        await recoveryPage.fillPassword(testData.password)
-        await recoveryPage.fillRepeatPassword(testData.password) 
+        await recoveryPage.fillPassword(TEST_DATA.password)
+        await recoveryPage.fillRepeatPassword(TEST_DATA.password) 
 
         await recoveryPage.assertContinueButtonToBeEnabled()
         await recoveryPage.clickContinueButton()

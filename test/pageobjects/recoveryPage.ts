@@ -1,11 +1,11 @@
 import { $ } from '@wdio/globals';
 import Page from './page';
-import { testData } from '../data/test-data';
+import { TEST_DATA } from '../data/test-data';
 
 export class RecoveryPage extends Page {
 
     /*
-     Define selectors for elements on the recovery page
+        Define selectors for elements on the recovery page
     */
     public get getNeedWalletButton() {
         return $('[data-testid="btn-need-new-wallet"]');
@@ -41,11 +41,11 @@ export class RecoveryPage extends Page {
     }
 
     public get invalidRecoveryPhraseMessage() {
-         return $(`span=${testData.invalidRecoveryPhraseMessage}`);
+         return $(`span=${TEST_DATA.invalidRecoveryPhraseMessage}`);
     }
 
     public get invalidRepeatPasswordMessage() {
-        return $(`span=${testData.invalidRepeatPasswordMessage}`);
+        return $(`span=${TEST_DATA.invalidRepeatPasswordMessage}`);
     }
 
     public get copyButton() {
@@ -57,7 +57,7 @@ export class RecoveryPage extends Page {
     }
 
     /*
-     Methods to interact with the recovery page
+        Methods to interact with the recovery page
     */
     public async clickOnNeedWalletButton(): Promise<void> {
         await this.getNeedWalletButton.click()
@@ -129,5 +129,4 @@ export class RecoveryPage extends Page {
     public async assertPasswordToBeVisible(): Promise<void> {
         expect(await this.passwordInput.isDisplayed()).toBe(true)
     }
-
 }
